@@ -8,6 +8,7 @@ const {
   commentData,
 } = require("../db/data/test-data/index");
 const seed = require("../db/seeds/seed");
+const jsonEndpoints = require("../endpoints.json");
 
 beforeEach(() => seed({ topicData, userData, articleData, commentData }));
 afterAll(() => db.end());
@@ -37,21 +38,34 @@ describe("GET/api", () => {
       .expect(200)
       .then(({ body }) => {
         const keys = Object.keys(body);
-        const endpoints = [
-          "GET /api/topics",
-          "GET /api",
-          "GET /api/articles/:article_id",
-          "GET /api/articles",
-          "GET /api/articles/:article_id/comments",
-          "POST /api/articles/:article_id/comments",
-          "PATCH /api/articles/:article_id",
-          "DELETE /api/comments/:comment_id",
-          "GET /api/users",
-          "GET /api/articles",
-          "GET /api/articles/:article_id",
-        ];
+        const endpoints = Object.keys(jsonEndpoints);
         const results = endpoints.some((end) => keys.includes(end));
         expect(results).toBe(true);
+        for (let i = 0; i < keys.length; i++) {
+          expect(keys[i]).toBe(endpoints[i]);
+        }
+      });
+  });
+});
+
+describe("GET/api/articles/:article_id", () => {
+  it("get an article by its id", () => {
+    return request(app)
+      .get("/api/articles/1")
+      .expect(200)
+      .then(({ body }) => {
+        const sample = {
+          author: "butter_bridge",
+          title: "Living in the shadow of a great man",
+          article_id: 1,
+          body: "I find this existence challenging",
+          topic: "mitch",
+          created_at: "2020-07-09T20:11:00.000Z",
+          votes: 100,
+          article_img_url:
+            "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700",
+        };
+        expect(sample).toEqual(body[0]);
       });
   });
 });
