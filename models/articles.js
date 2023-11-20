@@ -7,3 +7,9 @@ exports.selectArticleById = (id) => {
       return rows;
     });
 };
+
+exports.selectAllArticles = () => {
+  return db.query(`SELECT * FROM ARTICLES ;`).then(({ rows }) => {
+    return rows;
+  });
+};
