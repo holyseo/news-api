@@ -55,18 +55,17 @@ describe("GET/api/articles/:article_id", () => {
       .get("/api/articles/1")
       .expect(200)
       .then(({ body }) => {
-        const { articles } = body;
-        articles.forEach((article) => {
-          expect(article).toMatchObject({
-            author: expect.any(String),
-            title: expect.any(String),
-            article_id: expect.any(Number),
-            body: expect.any(String),
-            topic: expect.any(String),
-            created_at: expect.any(String),
-            votes: expect.any(Number),
-            article_img_url: expect.any(String),
-          });
+        const { article } = body;
+        expect(article.article_id).toBe(1);
+        expect(article).toMatchObject({
+          author: expect.any(String),
+          title: expect.any(String),
+          article_id: expect.any(Number),
+          body: expect.any(String),
+          topic: expect.any(String),
+          created_at: expect.any(String),
+          votes: expect.any(Number),
+          article_img_url: expect.any(String),
         });
       });
   });
@@ -91,7 +90,6 @@ describe("GET/api/articles", () => {
             article_img_url: expect.any(String),
           });
         });
-        console.log(articles);
         expect(articles).toBeSorted("created_at", { descending: true });
       });
   });
