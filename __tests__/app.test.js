@@ -91,7 +91,31 @@ describe("GET/api/articles", () => {
           });
         });
         expect(articles).toBeSortedBy("created_at", { descending: true });
-        console.log(articles);
+      });
+  });
+});
+
+xdescribe("POST/api/articles/:article_id/comments", () => {
+  it("add a comment for an article", () => {
+    const sample = {
+      body: "comments body test test test...",
+      author: "username_test",
+    };
+    const expected = {
+      body: "comments body test test test...",
+      votes: 5,
+      author: "username_test",
+      article_id: 1,
+      created_at: 1586179090000,
+    };
+    return request(app)
+      .post("/api/articles/1/comments")
+      .expect(201)
+      .send(sample)
+      .then(({ body }) => {
+        const { comment } = body;
+        expect(comment.article_id).toBe(1);
+        expect(sample).toMatchObject(expected);
       });
   });
 });
