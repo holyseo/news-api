@@ -92,7 +92,6 @@ describe("GET/api/articles", () => {
             comment_count: expect.any(Number),
           });
         });
-        console.log(articles);
         expect(articles).toBeSorted("created_at", { descending: true });
       });
   });
