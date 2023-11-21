@@ -25,5 +25,8 @@
         }
       ]
     }
+  },
+  "GET /api/articles/:article_id": {
+    "description": "serves an array of an article found by article_id"
   }
 }
