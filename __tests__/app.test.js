@@ -91,7 +91,30 @@ describe("GET/api/articles", () => {
           });
         });
         expect(articles).toBeSortedBy("created_at", { descending: true });
-        console.log(articles);
+      });
+  });
+});
+
+describe("GET/api/articles/:article_id/comments", () => {
+  it("get all comments for an article", () => {
+    return request(app)
+      .get("/api/articles/1/comments")
+      .expect(200)
+      .then(({ body }) => {
+        const { comments } = body;
+        expect(comments).toHaveLength(11);
+        comments.forEach((comment) => {
+          expect(comment.article_id).toBe(1);
+          expect(comment).toMatchObject({
+            comment_id: expect.any(Number),
+            votes: expect.any(Number),
+            created_at: expect.any(String),
+            author: expect.any(String),
+            body: expect.any(String),
+            article_id: expect.any(Number),
+          });
+        });
+        expect(comments).toBeSortedBy("created_at", { descending: true });
       });
   });
 });

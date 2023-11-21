@@ -28,5 +28,8 @@
   },
   "GET /api/articles/:article_id": {
     "description": "serves an array of an article found by article_id"
+  },
+  "GET /api/articles/:article_id/comments": {
+    "description": "serves an array of comments for an article with a specific article_id"
   }
 }
