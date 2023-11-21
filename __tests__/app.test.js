@@ -90,7 +90,8 @@ describe("GET/api/articles", () => {
             article_img_url: expect.any(String),
           });
         });
-        expect(articles).toBeSorted("created_at", { descending: true });
+        expect(articles).toBeSortedBy("created_at", { descending: true });
+        console.log(articles);
       });
   });
 });
