@@ -95,26 +95,49 @@ describe("GET/api/articles", () => {
   });
 });
 
-xdescribe("POST/api/articles/:article_id/comments", () => {
+describe("POST/api/articles/:article_id/comments", () => {
   it("201 status - add a comment for an article", () => {
     const sample = {
-      body: "comments body test test test...",
-      author: "username_test",
-    };
-    const expected = {
-      body: "comments body test test test...",
-      votes: 5,
-      author: "username_test",
-      article_id: 1,
-      created_at: 1586179090000,
+      body: "body for a new comment",
+      author: "butter_bridge",
     };
     return request(app)
-      .post("/api/articles/15/comments")
+      .post("/api/articles/13/comments")
+      .send(sample)
       .expect(201)
       .then(({ body }) => {
         const { comment } = body;
-        expect(comment.article_id).toBe(1);
-        expect(sample).toMatchObject(expected);
+        expect(comment).toMatchObject({
+          body: expect.any(String),
+          author: expect.any(String),
+          comment_id: 19,
+        });
+      });
+  });
+  it("404 status - request with an invalid article_id", () => {
+    const sample = {
+      body: "body for a new comment",
+      author: "butter_bridge",
+    };
+    return request(app)
+      .post("/api/articles/invalidId/comments")
+      .send(sample)
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.msg).toBe("invalid request");
+      });
+  });
+  it("404 status - request with an non-existing article_id", () => {
+    const sample = {
+      body: "body for a new comment",
+      author: "butter_bridge",
+    };
+    return request(app)
+      .post("/api/articles/99/comments")
+      .send(sample)
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.msg).toBe("article not found");
       });
   });
 });

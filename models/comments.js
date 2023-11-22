@@ -1,14 +1,12 @@
 const db = require("../db/connection");
 
-exports.addCommentsById = (author, body, id) => {
-  console.log(author, body, id);
+exports.addCommentsById = (id, commentBody) => {
   return db
     .query(
-      `INSERT INTO comments (author, body, article_id) VALUES ($1, $2, $3); `,
-      [author, body, id]
+      `INSERT INTO comments (author, body, article_id) VALUES ($1, $2, $3) RETURNING *; `,
+      [commentBody.author, commentBody.body, id]
     )
     .then(({ rows }) => {
-      console.log(rows);
-      return rows;
+      return rows[0];
     });
 };
