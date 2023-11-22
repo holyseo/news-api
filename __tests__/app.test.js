@@ -77,10 +77,10 @@ describe("GET/api/articles/:article_id", () => {
         expect(body).toEqual({ msg: "article not found" });
       });
   });
-  it("status 400 - requests id with wrong data type", () => {
+  it("status 404 - requests id with wrong data type", () => {
     return request(app)
       .get("/api/articles/invalidrequest")
-      .expect(400)
+      .expect(404)
       .then(({ body }) => {
         expect(body).toEqual({ msg: "invalid request" });
       });
@@ -126,6 +126,7 @@ describe("GET/api/articles/:article_id/comments", () => {
       .then(({ body }) => {
         const { comments } = body;
         expect(comments).toHaveLength(11);
+        expect(comments).toBeSortedBy("created_at", { descending: true });
         comments.forEach((comment) => {
           expect(comment.article_id).toBe(1);
           expect(comment).toMatchObject({
@@ -137,7 +138,14 @@ describe("GET/api/articles/:article_id/comments", () => {
             article_id: expect.any(Number),
           });
         });
-        expect(comments).toBeSortedBy("created_at", { descending: true });
+      });
+  });
+  it("status 404: responds with an error message when an article_id is invalid", () => {
+    return request(app)
+      .get("/api/articles/invalidId/comments")
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.msg).toBe("invalid request");
       });
   });
   it("status 404: responds with an error message when an article does not exist", () => {
@@ -145,7 +153,17 @@ describe("GET/api/articles/:article_id/comments", () => {
       .get("/api/articles/99/comments")
       .expect(404)
       .then(({ body }) => {
-        expect(body.msg).toBe("no comments found");
+        console.log(body);
+        expect(body.msg).toBe("article not found");
+      });
+  });
+  it("status 200: responds with no comments although an article exists", () => {
+    return request(app)
+      .get("/api/articles/2/comments")
+      .expect(200)
+      .then(({ body }) => {
+        console.log(body);
+        expect(body.comments).toEqual([]);
       });
   });
 });
