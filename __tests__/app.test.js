@@ -96,7 +96,7 @@ describe("GET/api/articles", () => {
 });
 
 xdescribe("POST/api/articles/:article_id/comments", () => {
-  it("add a comment for an article", () => {
+  it("201 status - add a comment for an article", () => {
     const sample = {
       body: "comments body test test test...",
       author: "username_test",
@@ -109,9 +109,8 @@ xdescribe("POST/api/articles/:article_id/comments", () => {
       created_at: 1586179090000,
     };
     return request(app)
-      .post("/api/articles/1/comments")
+      .post("/api/articles/15/comments")
       .expect(201)
-      .send(sample)
       .then(({ body }) => {
         const { comment } = body;
         expect(comment.article_id).toBe(1);
