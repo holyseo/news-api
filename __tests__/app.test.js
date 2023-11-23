@@ -179,4 +179,23 @@ describe("POST/api/articles/:article_id/comments", () => {
         expect(body.msg).toBe("invalid input");
       });
   });
+  it.only("201 status - add a comment for an article with extra information on the body", () => {
+    const sample = {
+      body: "body for a new comment",
+      author: "butter_bridge",
+      votes: 100,
+    };
+    return request(app)
+      .post("/api/articles/13/comments")
+      .send(sample)
+      .expect(201)
+      .then(({ body }) => {
+        const { comment } = body;
+        expect(comment).toMatchObject({
+          body: expect.any(String),
+          author: expect.any(String),
+          comment_id: 19,
+        });
+      });
+  });
 });
