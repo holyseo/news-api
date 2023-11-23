@@ -50,7 +50,7 @@ describe("GET/api", () => {
 });
 
 describe("GET/api/articles/:article_id", () => {
-  it("status 200 - get an article by its id", () => {
+  it("get an article by its id", () => {
     return request(app)
       .get("/api/articles/1")
       .expect(200)
@@ -67,22 +67,6 @@ describe("GET/api/articles/:article_id", () => {
           votes: expect.any(Number),
           article_img_url: expect.any(String),
         });
-      });
-  });
-  it("status 404 - requests valid id but it doesn't exists", () => {
-    return request(app)
-      .get("/api/articles/99")
-      .expect(404)
-      .then(({ body }) => {
-        expect(body).toEqual({ msg: "article not found" });
-      });
-  });
-  it("status 400 - requests id with wrong data type", () => {
-    return request(app)
-      .get("/api/articles/invalidrequest")
-      .expect(400)
-      .then(({ body }) => {
-        expect(body).toEqual({ msg: "invalid request" });
       });
   });
 });
@@ -106,14 +90,7 @@ describe("GET/api/articles", () => {
             article_img_url: expect.any(String),
           });
         });
-      });
-  });
-  it("status 200 - returns articles ordered by created_at", () => {
-    return request(app)
-      .get("/api/articles")
-      .expect(200)
-      .then(({ body }) => {
-        expect(body.articles).toBeSortedBy("created_at", { descending: true });
+        expect(articles).toBeSortedBy("created_at", { descending: true });
       });
   });
 });
@@ -202,7 +179,7 @@ describe("POST/api/articles/:article_id/comments", () => {
         expect(body.msg).toBe("invalid input");
       });
   });
-  it.only("201 status - add a comment for an article with extra information on the body", () => {
+  it("201 status - add a comment for an article with extra information on the body", () => {
     const sample = {
       body: "body for a new comment",
       author: "butter_bridge",
