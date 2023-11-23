@@ -50,7 +50,7 @@ describe("GET/api", () => {
 });
 
 describe("GET/api/articles/:article_id", () => {
-  it("get an article by its id", () => {
+  it("status 200 - get an article by its id", () => {
     return request(app)
       .get("/api/articles/1")
       .expect(200)
@@ -67,6 +67,22 @@ describe("GET/api/articles/:article_id", () => {
           votes: expect.any(Number),
           article_img_url: expect.any(String),
         });
+      });
+  });
+  it("status 404 - requests valid id but it doesn't exists", () => {
+    return request(app)
+      .get("/api/articles/99")
+      .expect(404)
+      .then(({ body }) => {
+        expect(body).toEqual({ msg: "article not found" });
+      });
+  });
+  it("status 404 - requests id with wrong data type", () => {
+    return request(app)
+      .get("/api/articles/invalidrequest")
+      .expect(404)
+      .then(({ body }) => {
+        expect(body).toEqual({ msg: "invalid request" });
       });
   });
 });
@@ -90,8 +106,64 @@ describe("GET/api/articles", () => {
             article_img_url: expect.any(String),
           });
         });
-        expect(articles).toBeSortedBy("created_at", { descending: true });
-        console.log(articles);
+      });
+  });
+  it("status 200 - returns articles ordered by created_at", () => {
+    return request(app)
+      .get("/api/articles")
+      .expect(200)
+      .then(({ body }) => {
+        expect(body.articles).toBeSortedBy("created_at", { descending: true });
+      });
+  });
+});
+
+describe("GET/api/articles/:article_id/comments", () => {
+  it("status 200 - get all comments for an article", () => {
+    return request(app)
+      .get("/api/articles/1/comments")
+      .expect(200)
+      .then(({ body }) => {
+        const { comments } = body;
+        expect(comments).toHaveLength(11);
+        expect(comments).toBeSortedBy("created_at", { descending: true });
+        comments.forEach((comment) => {
+          expect(comment.article_id).toBe(1);
+          expect(comment).toMatchObject({
+            comment_id: expect.any(Number),
+            votes: expect.any(Number),
+            created_at: expect.any(String),
+            author: expect.any(String),
+            body: expect.any(String),
+            article_id: expect.any(Number),
+          });
+        });
+      });
+  });
+  it("status 404: responds with an error message when an article_id is invalid", () => {
+    return request(app)
+      .get("/api/articles/invalidId/comments")
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.msg).toBe("invalid request");
+      });
+  });
+  it("status 404: responds with an error message when an article does not exist", () => {
+    return request(app)
+      .get("/api/articles/99/comments")
+      .expect(404)
+      .then(({ body }) => {
+        console.log(body);
+        expect(body.msg).toBe("article not found");
+      });
+  });
+  it("status 200: responds with no comments although an article exists", () => {
+    return request(app)
+      .get("/api/articles/2/comments")
+      .expect(200)
+      .then(({ body }) => {
+        console.log(body);
+        expect(body.comments).toEqual([]);
       });
   });
 });
