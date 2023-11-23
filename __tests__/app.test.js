@@ -93,6 +93,30 @@ describe("GET/api/articles", () => {
         expect(articles).toBeSortedBy("created_at", { descending: true });
       });
   });
+  it("status 400: responds with an error message when an article_id is invalid", () => {
+    return request(app)
+      .get("/api/articles/invalidId/comments")
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("invalid request");
+      });
+  });
+  it("status 400: responds with an error message when an article does not exist", () => {
+    return request(app)
+      .get("/api/articles/99/comments")
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.msg).toBe("article not found");
+      });
+  });
+  it("status 200: responds with no comments although an article exists", () => {
+    return request(app)
+      .get("/api/articles/2/comments")
+      .expect(200)
+      .then(({ body }) => {
+        expect(body.comments).toEqual([]);
+      });
+  });
 });
 
 describe("POST/api/articles/:article_id/comments", () => {
@@ -114,7 +138,7 @@ describe("POST/api/articles/:article_id/comments", () => {
         });
       });
   });
-  it("404 status - request with an invalid article_id", () => {
+  it("400 status - request with an invalid article_id", () => {
     const sample = {
       body: "body for a new comment",
       author: "butter_bridge",
@@ -196,6 +220,71 @@ describe("POST/api/articles/:article_id/comments", () => {
           author: expect.any(String),
           comment_id: 19,
         });
+      });
+  });
+});
+describe("PATCH/api/articles/:article_id", () => {
+  it("200 status - update votes with a value of an object", () => {
+    const increaseVote = { inc_votes: 1 };
+    return request(app)
+      .patch("/api/articles/1")
+      .send(increaseVote)
+      .expect(200)
+      .then(({ body }) => {
+        const { vote } = body;
+        expect(vote).toBe(`Vote has been updated: ${101}`);
+      });
+  });
+  it("200 status - update votes with a value of an object", () => {
+    const decreaseVote = { inc_votes: -100 };
+    return request(app)
+      .patch("/api/articles/1")
+      .send(decreaseVote)
+      .expect(200)
+      .then(({ body }) => {
+        const { vote } = body;
+        expect(vote).toBe(`Vote has been updated: ${0}`);
+      });
+  });
+  it("400 status - missing votes value from an object", () => {
+    const increaseVote = { inc_votes: "" };
+    return request(app)
+      .patch("/api/articles/1")
+      .send(increaseVote)
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("invalid request");
+      });
+  });
+  it("400 status - invalid data type of votes value from an object", () => {
+    const increaseVote = { inc_votes: "invalid" };
+    return request(app)
+      .patch("/api/articles/1")
+      .send(increaseVote)
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("invalid request");
+      });
+  });
+  it("400 status - invalid article_id in the url", () => {
+    const increaseVote = { inc_votes: "invalid" };
+    return request(app)
+      .patch("/api/articles/invalidId")
+      .send(increaseVote)
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("invalid request");
+      });
+  });
+  it("404 status - valid but non-existing article_id in the url", () => {
+    const increaseVote = { inc_votes: 1 };
+    return request(app)
+      .patch("/api/articles/99")
+      .send(increaseVote)
+      .expect(404)
+      .then(({ body }) => {
+        console.log(body);
+        expect(body.msg).toBe("article not found");
       });
   });
 });
