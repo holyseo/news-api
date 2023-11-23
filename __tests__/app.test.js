@@ -137,7 +137,33 @@ describe("POST/api/articles/:article_id/comments", () => {
       .send(sample)
       .expect(404)
       .then(({ body }) => {
-        expect(body.msg).toBe("article not found");
+        expect(body.msg).toBe("invalid content");
+      });
+  });
+  it("404 status - requests with non-existing username", () => {
+    const sample = {
+      body: "body for a new comment",
+      author: "nonExistingUsername",
+    };
+    return request(app)
+      .post("/api/articles/13/comments")
+      .send(sample)
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.msg).toBe("invalid content");
+      });
+  });
+  xit("404 status - requests with missing values in body input", () => {
+    const sample = {
+      body: "",
+      author: "butter_bridge",
+    };
+    return request(app)
+      .post("/api/articles/13/comments")
+      .send(sample)
+      .expect(201)
+      .then(({ body }) => {
+        expect(body.msg).toBe("invalid content");
       });
   });
 });

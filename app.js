@@ -19,10 +19,11 @@ app.get("/api/articles", getAllArticles);
 app.post("/api/articles/:article_id/comments", postCommentsByArticleId);
 
 app.use((err, req, res, next) => {
+  console.log(err);
   if (err.code === "22P02") {
     res.status(404).send({ msg: "invalid request" });
   } else if (err.code === "23503") {
-    res.status(404).send({ msg: "article not found" });
+    res.status(404).send({ msg: "invalid content" });
   }
 });
 
