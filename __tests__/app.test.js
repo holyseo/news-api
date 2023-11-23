@@ -122,7 +122,7 @@ describe("POST/api/articles/:article_id/comments", () => {
     return request(app)
       .post("/api/articles/invalidId/comments")
       .send(sample)
-      .expect(404)
+      .expect(400)
       .then(({ body }) => {
         expect(body.msg).toBe("invalid request");
       });
@@ -135,7 +135,7 @@ describe("POST/api/articles/:article_id/comments", () => {
     return request(app)
       .post("/api/articles/99/comments")
       .send(sample)
-      .expect(404)
+      .expect(400)
       .then(({ body }) => {
         expect(body.msg).toBe("invalid content");
       });
@@ -148,12 +148,12 @@ describe("POST/api/articles/:article_id/comments", () => {
     return request(app)
       .post("/api/articles/13/comments")
       .send(sample)
-      .expect(404)
+      .expect(400)
       .then(({ body }) => {
         expect(body.msg).toBe("invalid content");
       });
   });
-  xit("404 status - requests with missing values in body input", () => {
+  it("400 status - requests with missing values in body input", () => {
     const sample = {
       body: "",
       author: "butter_bridge",
@@ -161,9 +161,22 @@ describe("POST/api/articles/:article_id/comments", () => {
     return request(app)
       .post("/api/articles/13/comments")
       .send(sample)
-      .expect(201)
+      .expect(400)
       .then(({ body }) => {
-        expect(body.msg).toBe("invalid content");
+        expect(body.msg).toBe("invalid input");
+      });
+  });
+  it("400 status - requests with missing values in username input", () => {
+    const sample = {
+      body: "body for a new comment",
+      author: "",
+    };
+    return request(app)
+      .post("/api/articles/13/comments")
+      .send(sample)
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("invalid input");
       });
   });
 });
