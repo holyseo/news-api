@@ -276,7 +276,7 @@ describe("PATCH/api/articles/:article_id", () => {
         expect(body.msg).toBe("invalid request");
       });
   });
-  it("400 status - valid but non-existing article_id in the url", () => {
+  it("404 status - valid but non-existing article_id in the url", () => {
     const increaseVote = { inc_votes: 1 };
     return request(app)
       .patch("/api/articles/99")
