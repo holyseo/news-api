@@ -7,6 +7,9 @@ const {
   postCommentsByArticleId,
 } = require("./controllers/postCommentsController");
 const { handlePsqlErrors, handleCustomErrors } = require("./error");
+const {
+  updateVotesByArticleId,
+} = require("./controllers/patchVotesByArticleIdController");
 
 const app = express();
 
@@ -18,6 +21,8 @@ app.get("/api/articles/:article_id", getArticlesById);
 app.get("/api/articles", getAllArticles);
 
 app.post("/api/articles/:article_id/comments", postCommentsByArticleId);
+
+app.patch("/api/articles/:article_id", updateVotesByArticleId);
 
 app.use(handlePsqlErrors);
 app.use(handleCustomErrors);

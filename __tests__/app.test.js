@@ -199,3 +199,67 @@ describe("POST/api/articles/:article_id/comments", () => {
       });
   });
 });
+describe("PATCH/api/articles/:article_id", () => {
+  it("200 status - update votes with a value of an object", () => {
+    const increaseVote = { inc_votes: 1 };
+    return request(app)
+      .patch("/api/articles/1")
+      .send(increaseVote)
+      .expect(200)
+      .then(({ body }) => {
+        const { vote } = body;
+        expect(vote).toBe(101);
+      });
+  });
+  it("200 status - update votes with a value of an object", () => {
+    const decreaseVote = { inc_votes: -100 };
+    return request(app)
+      .patch("/api/articles/1")
+      .send(decreaseVote)
+      .expect(200)
+      .then(({ body }) => {
+        const { vote } = body;
+        expect(vote).toBe(0);
+      });
+  });
+  it("400 status - missing votes value from an object", () => {
+    const increaseVote = { inc_votes: "" };
+    return request(app)
+      .patch("/api/articles/1")
+      .send(increaseVote)
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("invalid request");
+      });
+  });
+  it("400 status - invalid data type of votes value from an object", () => {
+    const increaseVote = { inc_votes: "invalid" };
+    return request(app)
+      .patch("/api/articles/1")
+      .send(increaseVote)
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("invalid request");
+      });
+  });
+  it("400 status - invalid article_id in the url", () => {
+    const increaseVote = { inc_votes: "invalid" };
+    return request(app)
+      .patch("/api/articles/invalidId")
+      .send(increaseVote)
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("invalid request");
+      });
+  });
+  it("400 status - valid but non-existing article_id in the url", () => {
+    const increaseVote = { inc_votes: "invalid" };
+    return request(app)
+      .patch("/api/articles/invalidId")
+      .send(increaseVote)
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("invalid request");
+      });
+  });
+});
