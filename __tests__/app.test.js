@@ -77,10 +77,10 @@ describe("GET/api/articles/:article_id", () => {
         expect(body).toEqual({ msg: "article not found" });
       });
   });
-  it("status 404 - requests id with wrong data type", () => {
+  it("status 400 - requests id with wrong data type", () => {
     return request(app)
       .get("/api/articles/invalidrequest")
-      .expect(404)
+      .expect(400)
       .then(({ body }) => {
         expect(body).toEqual({ msg: "invalid request" });
       });
@@ -140,10 +140,10 @@ describe("GET/api/articles/:article_id/comments", () => {
         });
       });
   });
-  it("status 404: responds with an error message when an article_id is invalid", () => {
+  it("status 400: responds with an error message when an article_id is invalid", () => {
     return request(app)
       .get("/api/articles/invalidId/comments")
-      .expect(404)
+      .expect(400)
       .then(({ body }) => {
         expect(body.msg).toBe("invalid request");
       });
