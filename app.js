@@ -6,7 +6,8 @@ const { getAllArticles } = require("./controllers/getArticlesController");
 const {
   postCommentsByArticleId,
 } = require("./controllers/postCommentsController");
-const { handlePsqlErrors, handleCustomErrors } = require("./error");
+const { getComments } = require("./controllers/getCommentsController");
+const { handlePsqlError, handleCustomErros } = require("./error");
 
 const app = express();
 
@@ -16,10 +17,11 @@ app.get("/api", getEndpoints);
 app.get("/api/topics", getTopics);
 app.get("/api/articles/:article_id", getArticlesById);
 app.get("/api/articles", getAllArticles);
+app.get("/api/articles/:article_id/comments", getComments);
 
 app.post("/api/articles/:article_id/comments", postCommentsByArticleId);
 
-app.use(handlePsqlErrors);
-app.use(handleCustomErrors);
+app.use(handlePsqlError);
+app.use(handleCustomErros);
 
 module.exports = app;
