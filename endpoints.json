@@ -48,5 +48,21 @@
         }
       ]
     }
+  },
+  "PATCH /api/articles/:article_id": {
+    "description": "serves an article object to update value of votes on the article found by article_id ",
+    "queries": [],
+    "exampleRequest": {
+      "inc_votes": 1
+    },
+    "exampleResponse": {
+      "article_id": 1,
+      "title": "Living in the shadow of a great man",
+      "body": "I find this existence challenging",
+      "votes": 101,
+      "topic": "mitch",
+      "author": "butter_bridge",
+      "created_at": "2023-11-22T15:15:15.15Z"
+    }
   }
 }

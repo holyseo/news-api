@@ -7,14 +7,20 @@ exports.modifyVotesByArticleId = (id, votesValue) => {
       [votesValue, +id]
     )
     .then(({ rows }) => {
-      return rows[0].votes;
+      if (rows.length === 0) {
+        return Promise.reject({ status: 404, msg: "article not found" });
+      }
+      return `Vote has been updated: ${rows[0].votes}`;
     });
 };
 
 exports.selectArticleById = (id) => {
   return db
-    .query(`SELECT * FROM ARTICLES WHERE article_id=$1 ;`, [id])
+    .query(`SELECT * FROM ARTICLES WHERE article_id=$1`, [id])
     .then(({ rows }) => {
+      if (rows.length === 0) {
+        return Promise.reject({ status: 404, msg: "article not found" });
+      }
       return rows;
     });
 };
