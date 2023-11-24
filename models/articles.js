@@ -1,5 +1,23 @@
 const db = require("../db/connection");
 
+exports.selectArticleByTopic = (topic) => {
+  return db
+    .query(`SELECT * FROM articles WHERE LOWER(topic) = LOWER($1) ; `, [topic])
+    .then(({ rows }) => {
+      return rows;
+    });
+};
+
+exports.checkExists = (topic) => {
+  return db
+    .query(`SELECT * FROM topics WHERE LOWER(slug) = LOWER($1)`, [topic])
+    .then(({ rows }) => {
+      if (rows.length === 0) {
+        return Promise.reject({ status: 404, msg: "topic not found" });
+      }
+    });
+};
+
 exports.modifyVotesByArticleId = (id, votesValue) => {
   return db
     .query(
