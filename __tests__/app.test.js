@@ -10,6 +10,7 @@ const {
 const seed = require("../db/seeds/seed");
 const jsonEndpoints = require("../endpoints.json");
 const sorted = require("jest-sorted");
+const { selectAllComments } = require("../models/comments");
 
 beforeEach(() => seed({ topicData, userData, articleData, commentData }));
 afterAll(() => db.end());
@@ -283,8 +284,36 @@ describe("PATCH/api/articles/:article_id", () => {
       .send(increaseVote)
       .expect(404)
       .then(({ body }) => {
-        console.log(body);
         expect(body.msg).toBe("article not found");
+      });
+  });
+});
+
+describe("DELETE/api/comments/:comment_id", () => {
+  it("204 status - delete the given comment by comment_id ", () => {
+    return request(app)
+      .delete("/api/comments/5")
+      .expect(204)
+      .then(() => {
+        return selectAllComments().then((comments) => {
+          expect(comments).toBe(17);
+        });
+      });
+  });
+  it("404 status - requests valid but non-existing comment_id in the url", () => {
+    return request(app)
+      .delete("/api/comments/99")
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.msg).toBe("comment not found");
+      });
+  });
+  it("400 status - requests invalid comment_id in the url", () => {
+    return request(app)
+      .delete("/api/comments/invalidComment")
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("invalid request");
       });
   });
 });
