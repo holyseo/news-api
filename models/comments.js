@@ -1,16 +1,5 @@
 const db = require("../db/connection");
 
-exports.selectArticleByTopic = (topic) => {
-  return db
-    .query(`SELECT * FROM articles WHERE LOWER(topic) = LOWER($1) ; `, [topic])
-    .then(({ rows }) => {
-      if (!rows[0]) {
-        return Promise.reject({ status: 404, msg: "topic not found" });
-      }
-      return rows;
-    });
-};
-
 exports.selectAllComments = () => {
   return db.query(`SELECT * FROM comments ;`).then(({ rows }) => {
     return rows.length;

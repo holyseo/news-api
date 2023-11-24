@@ -123,7 +123,7 @@ describe("GET/api/articles", () => {
 describe("GET/api/articles (topic query)", () => {
   it("200 status - get articles filtered by topic", () => {
     return request(app)
-      .get("/api/articles/?topic=mitch")
+      .get("/api/articles?topic=mitch")
       .expect(200)
       .then(({ body }) => {
         const { articles } = body;
@@ -143,7 +143,7 @@ describe("GET/api/articles (topic query)", () => {
   });
   it("200 status - get all articles when topic is omitted in the url", () => {
     return request(app)
-      .get("/api/articles/?topic=")
+      .get("/api/articles?topic=")
       .expect(200)
       .then(({ body }) => {
         const { articles } = body;
@@ -163,7 +163,7 @@ describe("GET/api/articles (topic query)", () => {
   });
   it("200 status - passes topic query in the url without case-sensitivity", () => {
     return request(app)
-      .get("/api/articles/?topic=MITCH")
+      .get("/api/articles?topic=MITCH")
       .expect(200)
       .then(({ body }) => {
         const { articles } = body;
@@ -181,9 +181,18 @@ describe("GET/api/articles (topic query)", () => {
         });
       });
   });
+  it("200 status - requests with existing topic query but no associated articles", () => {
+    return request(app)
+      .get("/api/articles?topic=paper")
+      .expect(200)
+      .then(({ body }) => {
+        const { articles } = body;
+        expect(articles).toEqual([]);
+      });
+  });
   it("404 status - requests with non-existing topic query ", () => {
     return request(app)
-      .get("/api/articles/?topic=nonExistingTopic")
+      .get("/api/articles?topic=nonExistingTopic")
       .expect(404)
       .then(({ body }) => {
         expect(body.msg).toBe("topic not found");

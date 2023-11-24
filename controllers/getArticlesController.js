@@ -1,5 +1,8 @@
-const { selectAllArticles } = require("../models/articles");
-const { selectArticleByTopic } = require("../models/comments");
+const {
+  selectAllArticles,
+  selectArticleByTopic,
+  checkExists,
+} = require("../models/articles");
 
 exports.getAllArticles = (req, res, next) => {
   const { topic } = req.query;
@@ -9,8 +12,21 @@ exports.getAllArticles = (req, res, next) => {
     });
   }
 
-  selectArticleByTopic(topic)
-    .then((articles) => {
+  // selectArticleByTopic(topic)
+  //   .then((articles) => {
+  //     res.status(200).send({ articles });
+  //   })
+  //   .catch(next);
+
+  const pendingArticles = selectArticleByTopic(topic);
+  const pendingPromises = [pendingArticles];
+
+  if (topic) {
+    pendingPromises.push(checkExists(topic));
+  }
+
+  Promise.all(pendingPromises)
+    .then(([articles, doesExist]) => {
       res.status(200).send({ articles });
     })
     .catch(next);
