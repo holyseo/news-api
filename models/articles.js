@@ -34,12 +34,18 @@ exports.modifyVotesByArticleId = (id, votesValue) => {
 
 exports.selectArticleById = (id) => {
   return db
-    .query(`SELECT * FROM ARTICLES WHERE article_id=$1`, [id])
+    .query(
+      `SELECT *,
+    (SELECT COUNT(*) FROM comments WHERE article_id = $1) AS comment_count
+FROM articles
+WHERE article_id = $1 ;`,
+      [id]
+    )
     .then(({ rows }) => {
       if (rows.length === 0) {
         return Promise.reject({ status: 404, msg: "article not found" });
       }
-      return rows;
+      return rows[0];
     });
 };
 
