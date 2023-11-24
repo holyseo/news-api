@@ -12,12 +12,6 @@ exports.getAllArticles = (req, res, next) => {
     });
   }
 
-  // selectArticleByTopic(topic)
-  //   .then((articles) => {
-  //     res.status(200).send({ articles });
-  //   })
-  //   .catch(next);
-
   const pendingArticles = selectArticleByTopic(topic);
   const pendingPromises = [pendingArticles];
 
