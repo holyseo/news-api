@@ -305,7 +305,7 @@ describe("DELETE/api/comments/:comment_id", () => {
       .delete("/api/comments/99")
       .expect(404)
       .then(({ body }) => {
-        expect(body.msg).toBe("invalid content");
+        expect(body.msg).toBe("comment not found");
       });
   });
   it("400 status - requests invalid comment_id in the url", () => {
