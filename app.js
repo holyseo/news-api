@@ -11,6 +11,7 @@ const {
 } = require("./controllers/patchVotesByArticleIdController");
 const { getComments } = require("./controllers/getCommentsController");
 const { handlePsqlErrors, handleCustomErrors } = require("./error");
+const { getAllUsers } = require("./controllers/getAllUsersController");
 
 const app = express();
 
@@ -21,6 +22,7 @@ app.get("/api/topics", getTopics);
 app.get("/api/articles/:article_id", getArticlesById);
 app.get("/api/articles", getAllArticles);
 app.get("/api/articles/:article_id/comments", getComments);
+app.get("/api/users", getAllUsers);
 
 app.post("/api/articles/:article_id/comments", postCommentsByArticleId);
 
