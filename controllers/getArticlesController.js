@@ -4,28 +4,23 @@ const {
   checkExists,
 } = require("../models/articles");
 
-exports.getAllArticles = (req, res, next) => {
+exports.getAllArticles = async (req, res, next) => {
   const { topic } = req.query;
-  if (req.originalUrl === "/api/articles" || topic.length === 0) {
-    selectAllArticles()
-      .then((articles) => {
-        res.status(200).send({ articles });
-      })
-      .catch((err) => {
-        next(err);
-      });
-  }
 
-  const pendingArticles = selectArticleByTopic(topic);
-  const pendingPromises = [pendingArticles];
-
-  if (topic) {
-    pendingPromises.push(checkExists(topic));
-  }
-
-  Promise.all(pendingPromises)
-    .then(([articles, doesExist]) => {
+  try {
+    if (req.originalUrl === "/api/articles" || topic.length === 0) {
+      const articles = await selectAllArticles();
       res.status(200).send({ articles });
-    })
-    .catch(next);
+      return; // Exit the function after sending the response
+    }
+
+    const [articles] = await Promise.all([
+      selectArticleByTopic(topic),
+      checkExists(topic),
+    ]);
+
+    res.status(200).send({ articles });
+  } catch (err) {
+    next(err);
+  }
 };
