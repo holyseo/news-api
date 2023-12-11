@@ -23,7 +23,6 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-app.get("/api/articles", getAllArticles);
 app.get("/api", getEndpoints);
 app.get("/api/topics", getTopics);
 app.get("/api/articles/:article_id", getArticlesById);
@@ -36,6 +35,8 @@ app.post("/api/articles/:article_id/comments", postCommentsByArticleId);
 app.patch("/api/articles/:article_id", updateVotesByArticleId);
 
 app.delete("/api/comments/:comment_id", deleteCommentById);
+
+app.get("/api/articles", getAllArticles);
 
 app.use(handlePsqlErrors);
 app.use(handleCustomErrors);
