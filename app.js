@@ -23,9 +23,9 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
+app.get("/api/articles", getAllArticles);
 app.get("/api", getEndpoints);
 app.get("/api/topics", getTopics);
-app.get("/api/articles", getAllArticles);
 app.get("/api/articles/:article_id", getArticlesById);
 app.get("/api/articles/:article_id/comments", getComments);
 app.get("/api/comments", selectAllComments);
