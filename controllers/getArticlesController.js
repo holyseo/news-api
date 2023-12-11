@@ -7,9 +7,11 @@ const {
 exports.getAllArticles = (req, res, next) => {
   const { topic } = req.query;
   if (req.originalUrl === "/api/articles" || topic.length === 0) {
-    selectAllArticles().then((articles) => {
-      res.status(200).send({ articles });
-    });
+    selectAllArticles()
+      .then((articles) => {
+        res.status(200).send({ articles });
+      })
+      .catch(next);
   }
 
   const pendingArticles = selectArticleByTopic(topic);
